@@ -39,8 +39,8 @@ def train(
     nb_batches = 10
     dataset = GraphDataset(X_full, U_full, nb_neighbours)
     dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True)
-    edge_neighbours = dataset.edge_neighbours
-    delta_t = dataset.delta_t
+    edge_neighbours = dataset.edge_neighbours.to(device)
+    delta_t = dataset.delta_t.to(device)
 
     for epoch in range(len(train_loss["total"]), nb_it_tot):
         time_start_batch = time.time()
@@ -89,30 +89,26 @@ def train(
         print(f"time_epoch: {time.time()-time_start_batch:.0f}s")
         print(f"time: {time.time()-time_start_batch:.0f}s", file=f)
 
-        # if (epoch + 1) % save_rate == 0:
-        #     with torch.no_grad():
-        #         dossier_midle = Path(
-        #             folder_result + f"/epoch{len(train_loss['total'])}"
-        #         )
-        #         dossier_midle.mkdir(parents=True, exist_ok=True)
-        #         torch.save(
-        #             {
-        #                 "model_state_dict": model.state_dict(),
-        #                 "optimizer_state_dict": optimizer.state_dict(),
-        #                 "scheduler_state_dict": scheduler.state_dict(),
-        #             },
-        #             folder_result
-        #             + f"/epoch{len(train_loss['total'])}"
-        #             + "/model_weights.pth",
-        #         )
+        if (epoch + 1) % save_rate == 0:
+            with torch.no_grad():
+                dossier_midle = Path(
+                    folder_result + f"/epoch{len(train_loss['total'])}"
+                )
+                dossier_midle.mkdir(parents=True, exist_ok=True)
+                torch.save(
+                    {
+                        "model_state_dict": model.state_dict(),
+                        "optimizer_state_dict": optimizer.state_dict(),
+                        "scheduler_state_dict": scheduler.state_dict(),
+                    },
+                    folder_result
+                    + f"/epoch{len(train_loss['total'])}"
+                    + "/model_weights.pth",
+                )
 
-        #         write_csv(
-        #             train_loss,
-        #             folder_result + f"/epoch{len(train_loss['total'])}",
-        #             file_name="/train_loss.csv",
-        #         )
-        #         write_csv(
-        #             test_loss,
-        #             folder_result + f"/epoch{len(train_loss['total'])}",
-        #             file_name="/test_loss.csv",
-        #         )
+                write_csv(
+                    train_loss,
+                    folder_result + f"/epoch{len(train_loss['total'])}",
+                    file_name="/train_loss.csv",
+                )
+

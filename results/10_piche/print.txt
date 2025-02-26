@@ -1,0 +1,67 @@
+Nouveau modèle
+
+Il y a 384475 parametres
+--------------------------
+Starting at epoch: 0
+--------------------------
+---------------------
+Epoch 1/1000 :
+Train : loss: 4.120e-02
+time: 56s
+time: 43s
+Nouveau modèle
+
+Il y a 384475 parametres
+--------------------------
+Starting at epoch: 0
+--------------------------
+---------------------
+Epoch 1/1000 :
+Train : loss: 4.105e-02
+time: 59s
+time: 47s
+---------------------
+Epoch 2/1000 :
+Train : loss: 4.076e-02
+time: 106s
+time: 47s
+---------------------
+Epoch 3/1000 :
+Train : loss: 4.066e-02
+time: 154s
+time: 47s
+---------------------
+Epoch 4/1000 :
+Train : loss: 4.050e-02
+time: 199s
+time: 45s
+---------------------
+Epoch 5/1000 :
+Train : loss: 4.047e-02
+time: 246s
+time: 47s
+---------------------
+Epoch 6/1000 :
+Train : loss: 4.029e-02
+time: 291s
+time: 45s
+---------------------
+Epoch 7/1000 :
+Train : loss: 4.019e-02
+time: 336s
+time: 45s
+---------------------
+Epoch 8/1000 :
+Train : loss: 4.012e-02
+time: 386s
+time: 50s
+---------------------
+Epoch 9/1000 :
+Train : loss: 4.000e-02
+time: 447s
+time: 61s
+---------------------
+Epoch 10/1000 :
+Train : loss: 3.984e-02
+time: 500s
+time: 53s

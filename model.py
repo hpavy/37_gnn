@@ -11,9 +11,9 @@ class GNN(nn.Module):
         self.dim_latent = hyper_param['dim_latent']
         self.nb_gn = hyper_param['nb_gn']
         self.gnn = nn.ModuleList(
-            [MLP(dim_in=3, dim_out=self.dim_latent, nb_hidden=self.nb_hidden_encode)]
+            [MLP(dim_in=3, dim_out=self.dim_latent, dim_latent=self.dim_latent, nb_hidden=self.nb_hidden_encode)]
             + [GN(self.nb_hidden, self.dim_latent, hyper_param['nb_neighbours']) for _ in range(hyper_param['nb_gn'])]
-            + [MLP(dim_in=self.dim_latent, dim_out=3, nb_hidden=self.nb_hidden_encode)]
+            + [MLP(dim_in=self.dim_latent, dim_latent=self.dim_latent, dim_out=3, nb_hidden=self.nb_hidden_encode)]
         )
 
     def forward(self, x, edge_neighbours):
@@ -26,8 +26,8 @@ class GN(nn.Module):
     def __init__(self, nb_hidden, dim_latent, nb_neighbours):
         super().__init__()
         self.mlp_neigh = nn.ModuleList(
-            [MLP(dim_latent, dim_latent, nb_hidden)] +  # pour lui même
-            [MLP(dim_latent, dim_latent, nb_hidden) for _ in range(nb_neighbours)]  # pour les voisins
+            [MLP(dim_latent, dim_latent, dim_latent, nb_hidden)] +  # pour lui même
+            [MLP(dim_latent, dim_latent, dim_latent, nb_hidden) for _ in range(nb_neighbours)]  # pour les voisins
             )
         self.LayerNorm = torch.nn.LayerNorm(dim_latent)
 
@@ -39,15 +39,16 @@ class GN(nn.Module):
 
 
 class MLP(nn.Module):
-    def __init__(self, dim_in, dim_out, nb_hidden):
+    def __init__(self, dim_in, dim_out, dim_latent, nb_hidden):
         # self.dim_in = dim_in
         # self.dim_out = dim_out
         super().__init__()
-        self.linear_first = nn.ModuleList([nn.Linear(dim_in, dim_out)])
+        self.linear_first = nn.ModuleList([nn.Linear(dim_in, dim_latent)])
         self.hidden = nn.ModuleList([
-            nn.Linear(dim_out, dim_out) for _ in range(nb_hidden)
+            nn.Linear(dim_latent, dim_latent) for _ in range(nb_hidden - 1)
         ])
-        self.mlp = self.linear_first + self.hidden
+        self.end = nn.ModuleList([nn.Linear(dim_latent, dim_out)])
+        self.mlp = self.linear_first + self.hidden + self.end
         self.initial_param()
 
     def forward(self, x, _):
