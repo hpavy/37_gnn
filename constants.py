@@ -27,3 +27,5 @@ DICT_CASE = {
 PARAM_ADIM = {"V": 1.0, "L": 0.025, "rho": 1.2}
 
 M = 1.57
+
+T_MIN = 6.5

@@ -1,4 +1,3 @@
-from geometry import RectangleWithoutCylinder
 import torch
 from utils import charge_data, init_model
 from train import train
@@ -32,25 +31,10 @@ class RunSimulation:
             with open(self.folder_result + "/hyper_param.json", "r") as file:
                 self.hyper_param = json.load(file)
         (
-            X_train,
-            U_train,
             X_full,
             U_full,
-            X_border_train,
-            X_border_test,
-            U_border_train, 
-            U_border_test,
             mean_std,
-            X_pde,
-            X_test_pde,
-            X_test_data,
-            U_test_data,
         ) = charge_data(self.hyper_param, self.param_adim)
-        X_train.requires_grad_()
-        U_train.requires_grad_()
-        X_border_train.requires_grad_()
-        U_border_train.requires_grad_()
-
         mean_std_json = dict()
         for key in mean_std:
             mean_std_json[key] = mean_std[key].item()
@@ -61,54 +45,23 @@ class RunSimulation:
 
         # On plot les print dans un fichier texte
         with open(self.folder_result + "/print.txt", "a") as f:
-            model, optimizer, scheduler, loss, train_loss, test_loss, weights = (
+            model, optimizer, scheduler, loss, train_loss, test_loss = (
                 init_model(f, self.hyper_param, self.device, self.folder_result)
             )
             # On entraine le modèle
-            if self.hyper_param["dynamic_weights"]:
-                weight_data = weights["weight_data"]
-                weight_pde = weights["weight_pde"]
-                weight_border = weights["weight_border"]
-            else:
-                weight_data = self.hyper_param["weight_data"]
-                weight_pde = self.hyper_param["weight_pde"]
-                weight_border = self.hyper_param["weight_border"]
-                # Data loading
-
             train(
                 nb_epoch=1000,
                 train_loss=train_loss,
-                test_loss=test_loss,
-                weight_data_init=weight_data,
-                weight_pde_init=weight_pde,
-                weight_border_init=weight_border,
-                dynamic_weights=self.hyper_param["dynamic_weights"],
-                lr_weights=self.hyper_param["lr_weights"],
                 model=model,
                 loss=loss,
                 optimizer=optimizer,
-                X_train=X_train,
-                U_train=U_train,
-                X_pde=X_pde,
-                X_test_pde=X_test_pde,
-                X_test_data=X_test_data,
-                U_test_data=U_test_data,
-                Re=self.hyper_param["Re"],
                 time_start=self.time_start,
                 f=f,
                 folder_result=self.folder_result,
                 save_rate=self.hyper_param["save_rate"],
                 batch_size=self.hyper_param["batch_size"],
                 scheduler=scheduler,
-                X_border_train=X_border_train,
-                X_border_test=X_border_test,
-                U_border_train=U_border_train,
-                U_border_test=U_border_test,
-                mean_std=mean_std,
-                param_adim=self.param_adim,
-                nb_simu=len(self.hyper_param["file"]),
-                force_inertie_bool=self.hyper_param["force_inertie_bool"],
-                u_border=self.hyper_param['u_border'],
-                v_border=self.hyper_param['v_border'],
-                p_border=self.hyper_param['p_border'],
+                X_full=X_full,
+                U_full=U_full,
+                nb_neighbours=self.hyper_param['nb_neighbours']
             )
