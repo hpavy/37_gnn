@@ -6,7 +6,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Le code se lance sur {device}")
 
 
-folder_result_name = "10_piche"  # name of the result folder
+folder_result_name = "3_piche"  # name of the result folder
 
 # On utilise hyper_param_init uniquement si c'est un nouveau modèle
 hyper_param_init = {
@@ -23,10 +23,10 @@ hyper_param_init = {
     "y_max": 0.06,
     "t_min": 6.5,
     'nb_hidden': 2,
-    'dim_latent': 64,
+    'dim_latent': 32,
     'nb_gn': 10,
     'nb_hidden_encode': 2,
-    'nb_neighbours': 2
+    'nb_neighbours': 4
 }
 
 hyper_param_init['H'] = [DICT_CASE[str(hyper_param_init['case'])]]
